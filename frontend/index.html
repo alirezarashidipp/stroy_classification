@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#db0011">
+  <meta name="description" content="An evidence-led workspace for classifying stories, tasks and bugs.">
+  <title>Work item classifier · HSBC</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/frontend/styles.css">
+  <script src="/frontend/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#work-item">Skip to work item</a>
+  <header class="header">
+    <div class="brand"><img src="/static/image/HSBC_logo_(2018)%20(1).svg" alt="HSBC" width="116" height="32"><span class="brand-divider"></span><span class="brand-label">Delivery workspace</span></div>
+    <div class="header-right"><span class="prototype">DEMO</span><span class="connection" id="connection"><span class="status-dot"></span><span id="connection-text">Checking configuration</span></span></div>
+  </header>
+
+  <main class="page">
+    <div class="breadcrumb">Delivery tools <span>/</span> <span>Work item classifier</span></div>
+    <section class="intro" aria-labelledby="page-title">
+      <div><div class="eyebrow"><span></span> FROM DESCRIPTION TO DIRECTION</div><h1 id="page-title">Every work item.<br>In the right place.</h1></div>
+      <p>A story, a task, or a bug?<br>Start with your description. Get a clear recommendation,<br class="desktop-break"> grounded in the words you wrote.</p>
+    </section>
+
+    <div class="workspace">
+      <section class="input-panel" aria-labelledby="input-title">
+        <div class="panel-heading"><span class="step">01</span><h2 id="input-title">Describe the work</h2></div>
+        <p class="panel-description">Paste a ticket or write what needs to happen.</p>
+        <form id="classify-form">
+          <label for="work-item">Work item description</label>
+          <div class="textarea-wrap"><textarea id="work-item" name="text" dir="auto" maxlength="12000" placeholder="What should change, who is it for, or what isn't working?" aria-describedby="input-help character-count" required></textarea><div class="textarea-footer"><span id="input-help">A little context goes a long way.</span><span id="character-count">0 / 12,000</span></div></div>
+          <div class="examples"><span>Try an example</span><div class="example-buttons"><button type="button" data-example="Story"><span class="type-symbol">◇</span> Story</button><button type="button" data-example="Task"><span class="type-symbol">☑</span> Task</button><button type="button" data-example="Bug"><span class="type-symbol">⊗</span> Bug</button></div></div>
+          <div class="input-actions"><button class="analyse-button" id="analyse-button" type="submit"><span id="analyse-label">Analyse work item</span><span id="analyse-icon" aria-hidden="true">↗</span></button><button type="button" class="clear-button" id="clear-button" disabled>Clear</button></div>
+          <p class="keyboard-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to analyse <span>· Text is sent to OpenAI</span></p>
+          <div class="error" id="error" role="alert" hidden></div>
+        </form>
+        <div class="input-note"><span class="note-icon" aria-hidden="true">i</span><p>Intent comes first. An incomplete story is still a story.<br>Classification and writing quality are different things.</p></div>
+      </section>
+
+      <section class="result-panel" id="result-panel" aria-labelledby="result-title" aria-busy="false">
+        <div class="result-heading"><div class="panel-heading"><span class="step">02</span><h2 id="result-title">Your assessment</h2></div><span class="result-state" id="result-state">AWAITING INPUT</span></div>
+        <div class="gauge-container"><svg class="gauge" viewBox="0 0 300 175" aria-hidden="true"><path class="gauge-track" d="M 35 145 A 115 115 0 0 1 265 145" pathLength="100"/><path class="gauge-fill" id="gauge-fill" d="M 35 145 A 115 115 0 0 1 265 145" pathLength="100"/><text x="27" y="170" class="gauge-end">0</text><text x="253" y="170" class="gauge-end">100</text></svg><div class="gauge-number"><span id="match-score">—</span><span class="gauge-caption">RUBRIC MATCH</span></div></div>
+        <div class="verdict" aria-live="polite"><span class="verdict-label" id="verdict-label">A little clarity, coming up.</span><p id="verdict-description">Your recommendation and supporting evidence<br>will appear here.</p></div>
+        <p class="review-notice" id="review-notice" hidden>Needs a human look · The evidence is limited, mixed, or close between categories.</p>
+        <div class="category-scores" aria-label="Category match scores"><div class="category-score" data-category="Story"><div><span>◇ Story</span><strong>—</strong></div><div class="score-track"><span></span></div></div><div class="category-score" data-category="Task"><div><span>☑ Task</span><strong>—</strong></div><div class="score-track"><span></span></div></div><div class="category-score" data-category="Bug"><div><span>⊗ Bug</span><strong>—</strong></div><div class="score-track"><span></span></div></div></div>
+        <p class="score-note">Match measures rubric fit, not the probability of being correct.</p>
+        <div class="evidence-section" id="evidence-section" hidden><div class="section-label">THE EVIDENCE</div><div id="evidence-list"></div><div id="missing-section" hidden><div class="section-label">HELPFUL TO ADD</div><ul id="missing-list"></ul></div></div>
+        <div class="result-actions" id="result-actions" hidden><button type="button" id="copy-button">Copy assessment <span aria-hidden="true">↗</span></button><span id="copy-status" role="status"></span></div>
+      </section>
+    </div>
+
+    <section class="rubric-section" aria-labelledby="rubric-title">
+      <details id="rubric-details"><summary><div><span class="section-label">A TRANSPARENT FRAMEWORK</span><h2 id="rubric-title">What makes a story, a task, or a bug?</h2></div><span class="rubric-toggle"><span>Explore the rubric</span><span class="plus" aria-hidden="true">+</span></span></summary><div class="rubric-content"><p class="rubric-intro">Each criterion: <strong>0</strong> absent · <strong>1</strong> implied or incomplete · <strong>2</strong> explicit and clear. All criteria have equal weight.</p><div class="rubric-grid" id="rubric-grid"></div><p class="rubric-footnote">Proposed demo rubric v1.0 · Independent category scores · Ties and ambiguous descriptions need review.</p></div></details>
+    </section>
+    <footer><span>HSBC <span class="footer-divider">/</span> Delivery workspace</span><span>Demonstration · Proposed rubric, not official HSBC policy</span></footer>
+    <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>
